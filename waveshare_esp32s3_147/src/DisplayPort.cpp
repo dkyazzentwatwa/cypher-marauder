@@ -33,7 +33,7 @@ bool DisplayPort::begin() {
   _tft.setTextSize(1);
   _tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
   _ready = true;
-    drawStatus("cypher-drive", "Display init OK");
+    drawStatus("Cypher Marauder", "Display init OK");
   return true;
 #elif BOARD_HAS_DISPLAY && BOARD_DISPLAY_IS_SSD1306
   Wire.begin(PIN_SSD1306_SDA, PIN_SSD1306_SCL);
@@ -44,7 +44,7 @@ bool DisplayPort::begin() {
     _oled.setTextSize(1);
     _oled.setTextColor(SSD1306_WHITE, SSD1306_BLACK);
     _oled.setRotation(LCD_ROTATION);
-    drawStatus("cypher-drive", "Display init OK");
+    drawStatus("Cypher Marauder", "Display init OK");
   }
   return _ready;
 #else

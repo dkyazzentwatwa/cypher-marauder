@@ -165,7 +165,8 @@ void setup() {
 
   Serial.begin(115200);
   delay(2000);
-  Serial.println("\n=== ESP32 Dev Board Booting ===");
+  Serial.println("\n=== Cypher Marauder Booting ===");
+  Serial.println("Target: ESP32 devboard custom");
 
   displayInit();
 
@@ -195,7 +196,7 @@ void setup() {
   Serial.println("OK: WS2812 initialized");
   MarauderCore::core().begin("esp32-devboard-custom");
 
-  Serial.println("=== Boot Complete ===\n");
+  Serial.println("=== Cypher Marauder Ready ===\n");
   screenDirty = true;
 }
 
@@ -394,7 +395,7 @@ void displayInit() {
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);
     display.setCursor(0, 0);
-    display.println("ESP32 Dev Board");
+    display.println("Cypher Marauder");
     display.println("Starting...");
     display.display();
     Serial.println("OK: Display initialized");
@@ -409,8 +410,8 @@ void displayBootScreen() {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println("ESP32");
-  display.println("Dev Board");
+  display.println("CYPHER");
+  display.println("MARAUDER");
   display.setTextSize(1);
   display.setCursor(0, 52);
   display.println("Initializing...");

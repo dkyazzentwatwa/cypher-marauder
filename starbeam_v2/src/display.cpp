@@ -153,9 +153,11 @@ void Display::updateDisplay(const char* message) {
 
 void Display::displayTitleScreen() {
     oled.clearDisplay();
-    u8g2.setFont(u8g2_font_adventurer_tr);
-    u8g2.setCursor(20, 40);
-    u8g2.print("CYPHER BOX");
+    u8g2.setFont(u8g2_font_6x12_tf);
+    u8g2.setCursor(24, 26);
+    u8g2.print("CYPHER");
+    u8g2.setCursor(16, 42);
+    u8g2.print("MARAUDER");
     oled.display();
 }
 
@@ -164,7 +166,7 @@ void Display::displayInfoScreen() {
     u8g2.setFont(u8g2_font_baby_tf);
 
     u8g2.setCursor(0, 22);
-    u8g2.print("Welcome to PROJECT STARBEAM!");
+    u8g2.print("Welcome to Cypher Marauder!");
 
     u8g2.setCursor(0, 30);
     u8g2.print("This is a cool cyber tool.");

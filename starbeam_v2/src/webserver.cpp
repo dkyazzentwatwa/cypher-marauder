@@ -136,7 +136,7 @@ String StarbeamWebServer::generateHTMLHeader(const char* title) {
     html += "button{background:#333;border:1px solid #555;padding:5px 10px;cursor:pointer}";
     html += "button:hover{background:#444}";
     html += "</style></head><body>";
-    html += "<h1>&#x1F4E1; Project Starbeam V2</h1>";
+    html += "<h1>&#x1F4E1; Cypher Marauder</h1>";
     return html;
 }
 

@@ -85,7 +85,7 @@ void AppMenu::draw(AppScreen currentScreen, bool force) {
 
   Adafruit_GFX &gfx = _display->gfx();
   _display->clear();
-  _display->drawHeader(" CYPHER-DRIVE");
+  _display->drawHeader(" CYPHER MARAUDER");
   gfx.drawFastHLine(0, FIRST_ROW_Y - 3, _display->width(), 0x31A6);
 
   const int visibleRows = max(1, (_display->height() - FIRST_ROW_Y - 22) / ROW_HEIGHT);

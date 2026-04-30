@@ -77,7 +77,7 @@ arduino-cli compile --upload --fqbn esp32:esp32:esp32:PartitionScheme=huge_app -
 arduino-cli compile --upload --fqbn esp32:esp32:esp32 --port /dev/cu.usbserial-0001 esp32_devkitc
 
 # Waveshare ESP32-S3 1.47
-arduino-cli compile --upload --fqbn esp32:esp32:esp32s3:USBMode=hwcdc,PartitionScheme=huge_app --port /dev/cu.usbmodem1101 waveshare_esp32s3_147
+arduino-cli compile --upload --fqbn esp32:esp32:esp32s3:USBMode=hwcdc,FlashSize=16M,PartitionScheme=huge_app --port /dev/cu.usbmodem1101 waveshare_esp32s3_147
 
 # Cypherbox
 arduino-cli compile --upload --fqbn esp32:esp32:esp32:PartitionScheme=huge_app --port /dev/cu.usbserial-0001 cypherbox

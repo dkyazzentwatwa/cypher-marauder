@@ -14,7 +14,7 @@ void SerialTerminal::begin(const SerialTerminalContext &ctx) {
   _lineLen = 0;
   _sawCarriageReturn = false;
   memset(_lineBuf, 0, sizeof(_lineBuf));
-  Serial.println("serial terminal ready; type 'help'");
+  Serial.println("Cypher Marauder terminal ready; type 'help'");
   MarauderCore::core().begin("waveshare-esp32s3-147");
   printPrompt();
 }

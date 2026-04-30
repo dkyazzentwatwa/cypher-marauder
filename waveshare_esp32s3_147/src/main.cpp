@@ -100,16 +100,19 @@ static void drawIntroScreen(DisplayPort &display) {
 
     gfx.setTextSize(1);
     gfx.setTextColor(0xD71C, ST77XX_BLACK);
-    gfx.setCursor(34, 14);
-    gfx.print("CYPHER-DRIVE");
+    gfx.setCursor(38, 14);
+    gfx.print("CYPHER MARAUDER");
 
     gfx.fillRoundRect(14, 118, 144, 74, 10, ST77XX_BLACK);
     gfx.drawRoundRect(14, 118, 144, 74, 10, (phase == 0) ? 0x03EF : 0xFBE0);
     gfx.drawRoundRect(16, 120, 140, 70, 8, 0x31A6);
+    gfx.setTextSize(1);
+    gfx.setCursor(46, 132);
+    gfx.print("CYPHER");
     gfx.setTextSize(2);
     gfx.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-    gfx.setCursor(24, 134);
-    gfx.print("cypher-drive");
+    gfx.setCursor(36, 148);
+    gfx.print("MARAUDER");
     gfx.setTextSize(1);
     if (phase == 0) {
       gfx.setTextColor(0x9E3F, ST77XX_BLACK);
@@ -133,7 +136,7 @@ void setup() {
   Serial.begin(SERIAL_BAUD);
   delay(200);
   Serial.println();
-  Serial.printf("cypher-drive profile=%s\n", BOARD_PROFILE_NAME);
+  Serial.printf("Cypher Marauder profile=%s\n", BOARD_PROFILE_NAME);
 
   if (!SessionLogger::instance().begin() || !SessionLogger::instance().startSession()) {
     Serial.println("Logger init failed");
@@ -400,7 +403,10 @@ bool handleMarauderButton(ButtonEvent event) {
   } else if (event == BUTTON_PREV) {
     MarauderCore::core().menuPrev();
     updateMarauderScreen(true);
-  } else if (event == BUTTON_SELECT || event == BUTTON_HOLD_2S) {
+  } else if (event == BUTTON_HOLD_2S) {
+    MarauderCore::core().unlockLab();
+    updateMarauderScreen(true);
+  } else if (event == BUTTON_SELECT) {
     MarauderCore::core().menuSelect();
     updateMarauderScreen(true);
   }

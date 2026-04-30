@@ -77,7 +77,7 @@ String StarbeamWebServer::getIP() { return apIP.toString(); }
 String StarbeamWebServer::generateHTMLHeader(const char* title) {
     String html = "<!DOCTYPE html><html><head><meta charset='utf-8'>";
     html += "<meta name='viewport' content='width=device-width,initial-scale=1'>";
-    html += "<title>Cypherbox - " + String(title) + "</title>";
+    html += "<title>Cypher Marauder - " + String(title) + "</title>";
     html += "<style>";
     html += "*{box-sizing:border-box;margin:0;padding:0}";
     html += "body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1a1a2e;color:#eee;min-height:100vh}";
@@ -119,7 +119,7 @@ String StarbeamWebServer::generateNavigation() {
 }
 
 String StarbeamWebServer::generateHTMLFooter() {
-    return "<footer>Cypherbox V2 | ESP32 Cybersecurity Toolkit</footer></div></body></html>";
+    return "<footer>Cypher Marauder | Cypherbox target</footer></div></body></html>";
 }
 
 void StarbeamWebServer::handleRoot() {
@@ -236,7 +236,7 @@ void StarbeamWebServer::handleStatus() {
 
 void StarbeamWebServer::handleSecurityRoot() {
     String html = generateHTMLHeader("Lab Modes Removed");
-    html += "<div class='card'><h2>Non-attack build</h2><p>Deauth, evil-twin, beacon, probe, and PMKID attack controls are removed from this Cypherbox V2 build. Use WiFi scan, heatmap, packet monitor, RFID lab tools, BLE scan, and SD utilities instead.</p></div>";
+    html += "<div class='card'><h2>Non-attack build</h2><p>Deauth, evil-twin, beacon, probe, and PMKID attack controls are removed from this Cypher Marauder build. Use WiFi scan, heatmap, packet monitor, RFID lab tools, BLE scan, and SD utilities instead.</p></div>";
     html += generateHTMLFooter();
     server->send(200, "text/html", html);
 }

@@ -992,7 +992,7 @@ void executeSelectedMenuItem() {
             break;
 
         case HELP:
-            Display::displayInfo("Help", "Project Starbeam", "V2 Firmware", "by Cypher");
+            Display::displayInfo("Help", "Cypher Marauder", "Starbeam V2", "by Cypher");
             nonBlockingDelay(3000);
             break;
 
@@ -1013,8 +1013,8 @@ void setup() {
     // Initialize terminal interface
     Terminal::init();
 
-    Serial.println("\n\nProject Starbeam V2");
-    Serial.println("Full implementation - 100% V1 hardware compatible");
+    Serial.println("\n\nCypher Marauder");
+    Serial.println("Starbeam V2 target - 100% V1 hardware compatible");
 
     delay(1000);
 

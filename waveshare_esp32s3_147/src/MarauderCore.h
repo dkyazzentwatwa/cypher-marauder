@@ -194,14 +194,11 @@ class Core {
       return true;
     }
     if (lower == "m lab unlock") {
-      _labUnlocked = true;
-      Serial.println("[marauder] lab unlocked for this boot. Authorized lab use only.");
+      unlockLab();
       return true;
     }
     if (lower == "m lab lock") {
-      _labUnlocked = false;
-      stopActive();
-      Serial.println("[marauder] lab locked");
+      lockLab();
       return true;
     }
     if (lower == "m pcap start") {
@@ -276,7 +273,7 @@ class Core {
     line1 = "Marauder Menu";
     line2 = String("> ") + menuItemName(_menuIndex);
     line3 = menuItemHint(_menuIndex);
-    line4 = _labUnlocked ? "LAB unlocked" : "LAB locked";
+    line4 = _labUnlocked ? "LAB unlocked" : "Hold 2s to unlock";
   }
 
   void menuNext() { _menuIndex = (_menuIndex + 1) % MENU_COUNT; }
@@ -287,7 +284,7 @@ class Core {
       case 0: scanAccessPoints(); break;
       case 1: printAccessPoints(); break;
       case 2: startMonitor(_monitoring ? MONITOR_OFF : MONITOR_ALL); break;
-      case 3: _labUnlocked = !_labUnlocked; Serial.printf("[marauder] lab %s\n", _labUnlocked ? "unlocked" : "locked"); break;
+      case 3: setLabUnlocked(!_labUnlocked); break;
       case 4: handleActiveCommand("m active beacon start"); break;
       case 5: handleActiveCommand("m active deauth start"); break;
       case 6: _pcapEnabled ? stopPcap() : startPcap(); break;
@@ -299,6 +296,11 @@ class Core {
 
   bool monitoring() const { return _monitoring; }
   bool labUnlocked() const { return _labUnlocked; }
+  void unlockLab() { setLabUnlocked(true); }
+  void lockLab() {
+    setLabUnlocked(false);
+    stopActive();
+  }
   bool pcapEnabled() const { return _pcapEnabled; }
   bool portalActive() const { return _portalActive; }
   uint8_t channel() const { return _channel; }
@@ -428,6 +430,17 @@ class Core {
                   _apCount, selectedApCount(), _staCount, selectedStationCount(),
                   _pcapEnabled ? "on" : "off", _portalActive ? "on" : "off");
     printStatsLine();
+  }
+
+  void setLabUnlocked(bool unlocked) {
+    if (_labUnlocked == unlocked) {
+      Serial.printf("[marauder] lab already %s\n", _labUnlocked ? "unlocked" : "locked");
+      return;
+    }
+    _labUnlocked = unlocked;
+    Serial.printf("[marauder] lab %s%s\n",
+                  _labUnlocked ? "unlocked" : "locked",
+                  _labUnlocked ? " for this boot. Authorized lab use only." : "");
   }
 
  private:

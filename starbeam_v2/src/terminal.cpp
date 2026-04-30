@@ -106,7 +106,8 @@ void Terminal::init() {
     // Print welcome message
     Serial.println();
     Serial.println("========================================");
-    Serial.println("  STARBEAM V2 TERMINAL");
+    Serial.println("  CYPHER MARAUDER TERMINAL");
+    Serial.println("  Starbeam V2 target");
     Serial.println("  Type 'help' for commands");
     Serial.println("========================================");
     Serial.print("> ");
@@ -302,7 +303,7 @@ MenuItem Terminal::commandToMenuItem(const String& cmd) {
 void Terminal::printHelp() {
     Serial.println();
     Serial.println("========================================");
-    Serial.println("  STARBEAM V2 COMMAND REFERENCE");
+    Serial.println("  CYPHER MARAUDER COMMAND REFERENCE");
     Serial.println("========================================");
     Serial.println();
     Serial.println("JAMMING OPERATIONS:");

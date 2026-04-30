@@ -80,7 +80,8 @@ void Terminal::init() {
     currentCommandLine = "";
     stopFlag = false;
     initialized = true;
-    Serial.println("\n=== Cypherbox V2 Terminal ===");
+    Serial.println("\n=== Cypher Marauder Terminal ===");
+    Serial.println("Target: Cypherbox");
     Serial.println("Type 'help' for commands, 'menu' for list");
     MarauderCore::core().begin("cypherbox");
 }
@@ -238,7 +239,7 @@ MenuItem Terminal::commandToMenuItem(const String& cmd) {
 }
 
 void Terminal::printHelp() {
-    Serial.println("\n=== Cypherbox V2 Commands ===");
+    Serial.println("\n=== Cypher Marauder Commands ===");
     Serial.println("  help         - Show this help");
     Serial.println("  menu         - List all menu items");
     Serial.println("  status       - System status");
@@ -260,7 +261,7 @@ void Terminal::printHelp() {
 }
 
 void Terminal::printStatus() {
-    Serial.println("\n=== Cypherbox V2 Status ===");
+    Serial.println("\n=== Cypher Marauder Status ===");
     Serial.printf("  Heap Free:   %lu bytes\n", ESP.getFreeHeap());
     Serial.printf("  Chip Model:  %s\n", ESP.getChipModel());
     Serial.printf("  WiFi Init:   %s\n", WiFiScanner::isInitialized() ? "YES" : "NO");

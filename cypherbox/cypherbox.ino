@@ -729,8 +729,8 @@ void executeSelectedMenuItem() {
             break;
 
         case HELP:
-            Display::displayInfo("Help", "Cypherbox V2", "ESP32 Cyber Toolkit", "");
-            Serial.println("Cypherbox V2 - Type 'help' in terminal for commands");
+            Display::displayInfo("Help", "Cypher Marauder", "Cypherbox target", "");
+            Serial.println("Cypher Marauder - Type 'help' in terminal for commands");
             delay(3000);
             break;
 
@@ -753,8 +753,8 @@ void setup() {
     Terminal::init();
 
     Serial.println("\n========================================");
-    Serial.println("  Cypherbox V2");
-    Serial.println("  ESP32 Cybersecurity Toolkit");
+    Serial.println("  Cypher Marauder");
+    Serial.println("  Cypherbox target");
     Serial.println("========================================");
 
     delay(1000);
