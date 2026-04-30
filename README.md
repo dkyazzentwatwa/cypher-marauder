@@ -126,26 +126,65 @@ All supported sketches use `115200` baud.
 arduino-cli monitor --port /dev/cu.usbserial-0001 --baudrate 115200
 ```
 
-## Shared Marauder Core Commands
+## Shared Marauder Core v2
 
-The shared core exposes a common serial command set across the supported boards. The custom ESP32 devboard also exposes the core through an OLED **Marauder Core** menu item.
+The shared core exposes a common serial command set across the supported boards. Starbeam, Cypherbox, Waveshare, and the custom ESP32 devboard also expose a local **Marauder Core / Marauder Lab** menu so the beginner flow is not serial-only.
 
 ```text
-marauder help
-marauder status
-marauder wifi
-marauder list
-marauder monitor
-marauder monitor beacon
-marauder monitor probe
-marauder monitor deauth
-marauder monitor eapol
-marauder channel 6
-marauder hop on
-marauder hop off
-marauder stop
-marauder reset
+m help
+m status
+m scan ap
+m list ap
+m select ap <n>
+m clear ap
+m scan sta
+m list sta
+m select sta <n>
+m clear sta
+m monitor start
+m monitor stop
+m channel 6
+m hop on
+m hop off
+m pcap start
+m pcap stop
+m pcap status
+m lab unlock
+m lab lock
+m active beacon start
+m active probe start
+m active deauth start
+m active pmkid start
+m active beacon|probe|deauth|pmkid stop
+m portal templates
+m portal template <n>
+m portal start
+m portal stop
+m portal captures
+m ble scan
+m ble list
+m ble stop
 ```
+
+| Feature | What it does |
+| --- | --- |
+| AP targets | Scans nearby access points, sorts by RSSI, and lets you select/deselect targets. |
+| Station targets | Learns stations passively during monitor mode and lets you select/deselect stations. |
+| Packet monitor | Uses ESP32 promiscuous mode for packet counters, channel hopping, and EAPOL/deauth/probe/beacon tracking. |
+| PCAP logging | Writes PCAP to SD on Cypherbox and Waveshare when storage is mounted; other boards report storage unavailable. |
+| Lab-gated active WiFi | Beacon/probe/deauth/PMKID lab modes refuse to run until `m lab unlock` is entered for the current boot. |
+| Portal lab capture | Starbeam, Cypherbox, and Waveshare expose lab portal commands; Cypherbox and Waveshare also save captures to SD. |
+| BLE facade | BLE-capable boards expose the shared `m ble ...` command surface and keep their local BLE modules. |
+
+| Board | UI entry |
+| --- | --- |
+| Starbeam V2 | OLED menu item: `Marauder Core` |
+| ESP32 DevKitC | Serial only |
+| Waveshare ESP32-S3 1.47 | Touch menu item: `Marauder Lab` |
+| Cypherbox | OLED menu item: `Marauder Core` |
+| ESP32 Devboard Custom PCB | OLED menu item: `Marauder Core` |
+
+Active WiFi and portal lab features are intentionally locked on every boot. Run `m lab unlock` from serial or select **Lab Unlock** in the board menu before starting transmit or capture flows. Only use these features on networks and devices you own or have explicit permission to test.
 
 ## Project Rules
 

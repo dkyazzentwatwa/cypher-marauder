@@ -13,6 +13,7 @@ constexpr MenuItem MENU_ITEMS[] = {
     {"BLE scanner", MENU_ACTION_OPEN_BLE},
     {"AP web server", MENU_ACTION_OPEN_AP},
     {"Captive Portal", MENU_ACTION_OPEN_PORTAL},
+    {"Marauder Lab", MENU_ACTION_OPEN_MARAUDER},
     {"System info", MENU_ACTION_OPEN_SYSTEM},
     {"USB HID actions", MENU_ACTION_OPEN_USB_HID},
     {"Channel monitor", MENU_ACTION_OPEN_CHANNEL},

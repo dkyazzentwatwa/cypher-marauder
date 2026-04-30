@@ -40,6 +40,7 @@
 #include "src/bluetooth_tools.h"
 #include "src/wifi_attack.h"
 #include "src/captive_portal.h"
+#include "src/MarauderCore.h"
 
 // ============================================================================
 // Global State Variables
@@ -203,6 +204,48 @@ void runLightOff() {
     pixels.show();
     Display::displayInfo("LIGHTS", "Off", "", "");
     delay(1000);
+}
+
+void runMarauderCoreMenu() {
+    unsigned long lastDraw = 0;
+    while (!Terminal::stopRequested()) {
+        Terminal::processInput();
+        MarauderCore::core().poll();
+
+        if (millis() - lastDraw > 500) {
+            String line1, line2, line3, line4;
+            MarauderCore::core().renderMenuLines(line1, line2, line3, line4);
+            Display::displayInfo(line1, line2, line3, line4);
+            lastDraw = millis();
+        }
+
+        if (Input::isButtonPressed(BUTTON_UP)) {
+            MarauderCore::core().menuPrev();
+            lastDraw = 0;
+            nonBlockingDelay(200);
+        }
+        if (Input::isButtonPressed(BUTTON_DOWN)) {
+            MarauderCore::core().menuNext();
+            lastDraw = 0;
+            nonBlockingDelay(200);
+        }
+        if (Input::isButtonPressed(BUTTON_SELECT)) {
+            unsigned long pressStart = millis();
+            while (Input::isButtonPressed(BUTTON_SELECT)) {
+                if (millis() - pressStart > 1000) {
+                    MarauderCore::core().stopAll();
+                    Terminal::clearStopFlag();
+                    return;
+                }
+                yield();
+            }
+            MarauderCore::core().menuSelect();
+            lastDraw = 0;
+            nonBlockingDelay(250);
+        }
+        yield();
+    }
+    Terminal::clearStopFlag();
 }
 
 // ============================================================================
@@ -669,6 +712,11 @@ void executeSelectedMenuItem() {
         case STOP_ALL:
             currentState = STATE_STOP_ALL;
             SystemTools::stopAll();
+            break;
+
+        case MARAUDER_CORE:
+            Serial.println("MARAUDER_CORE selected");
+            runMarauderCoreMenu();
             break;
 
         case SETTINGS:

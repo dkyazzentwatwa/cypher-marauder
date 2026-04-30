@@ -100,6 +100,7 @@ enum MenuItem {
   GET_RSSI,
   FLUSH_BUFF,
   STOP_ALL,
+  MARAUDER_CORE,
   SETTINGS,
   HELP,
   // Captive Portal

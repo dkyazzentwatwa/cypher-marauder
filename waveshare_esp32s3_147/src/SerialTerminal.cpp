@@ -5,7 +5,7 @@
 
 namespace {
 const char *kScreenNames[] = {
-    "menu", "wifi", "ble", "ap", "system", "hid", "channel", "display", "touch", "about", "portal",
+    "menu", "wifi", "ble", "ap", "system", "hid", "channel", "display", "touch", "about", "portal", "marauder",
 };
 }
 
@@ -96,7 +96,7 @@ void SerialTerminal::printHelp(const String &topicRaw) {
     return;
   }
   if (topic == "screen") {
-    Serial.println("screen names: menu wifi ble ap system hid channel display touch about portal");
+    Serial.println("screen names: menu wifi ble ap system hid channel display touch about portal marauder");
     return;
   }
   if (topic == "hid") {
@@ -530,6 +530,10 @@ bool SerialTerminal::openScreenByName(const String &name) {
   }
   if (same(name, "portal")) {
     _ctx.handleMenuAction(MENU_ACTION_OPEN_PORTAL);
+    return true;
+  }
+  if (same(name, "marauder")) {
+    _ctx.handleMenuAction(MENU_ACTION_OPEN_MARAUDER);
     return true;
   }
   return false;

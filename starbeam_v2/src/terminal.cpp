@@ -79,6 +79,7 @@ static const CommandMapping commands[] = {
     {"freq_43390", SET_43390, "Set frequency 433.90MHz"},
 
     // System
+    {"marauder_core", MARAUDER_CORE, "Open shared Marauder menu"},
     {"settings", SETTINGS, "Settings menu"},
     {"help", HELP, "Show help"}
 };

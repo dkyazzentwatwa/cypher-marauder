@@ -15,6 +15,7 @@
 #include "WifiTools.h"
 #include "CaptivePortal.h"
 #include "SDCardManager.h"
+#include "MarauderCore.h"
 
 #if ENABLE_TOUCH
 #include "../drivers/esp_lcd_touch_axs5106l/esp_lcd_touch_axs5106l.h"
@@ -53,6 +54,8 @@ void goBackToMenu();
 void runDisplayTest();
 void updateTouchTest();
 void updateChannelMonitor();
+void updateMarauderScreen(bool force = false);
+bool handleMarauderButton(ButtonEvent event);
 void onEnterChannelMonitor();
 void onExitChannelMonitor();
 void startChannelMonitorScan();
@@ -224,11 +227,15 @@ void loop() {
   if (currentScreen == SCREEN_PORTAL) {
     portalRequestsBack = handlePortalButton(event);
   }
+  bool marauderRequestsBack = false;
+  if (currentScreen == SCREEN_MARAUDER) {
+    marauderRequestsBack = handleMarauderButton(event);
+  }
 
-  if (scannerRequestedBack || portalRequestsBack) {
+  if (scannerRequestedBack || portalRequestsBack || marauderRequestsBack) {
     goBackToMenu();
   } else if (currentScreen == SCREEN_WIFI_SCAN || currentScreen == SCREEN_BLE_SCAN ||
-             currentScreen == SCREEN_USB_HID) {
+             currentScreen == SCREEN_USB_HID || currentScreen == SCREEN_MARAUDER) {
     // Scanner screens handle click/hold interactions internally.
   } else {
     const MenuAction action = menu.handleButton(event, currentScreen);
@@ -253,6 +260,9 @@ void loop() {
     break;
   case SCREEN_PORTAL:
     captivePortal.update(display);
+    break;
+  case SCREEN_MARAUDER:
+    updateMarauderScreen();
     break;
   case SCREEN_CHANNEL_MONITOR:
     updateChannelMonitor();
@@ -358,6 +368,14 @@ case MENU_ACTION_OPEN_PORTAL:
     captivePortal.begin(); // Start in menu state (not active)
     openScreen(SCREEN_PORTAL);
     break;
+case MENU_ACTION_OPEN_MARAUDER:
+    bluetoothTools.stop();
+    wifiTools.stop();
+    webMode.stop();
+    hidActions.stop();
+    openScreen(SCREEN_MARAUDER);
+    updateMarauderScreen(true);
+    break;
 case MENU_ACTION_OPEN_ABOUT:
     openScreen(SCREEN_ABOUT);
     drawAbout(display);
@@ -368,6 +386,25 @@ case MENU_ACTION_OPEN_ABOUT:
   case MENU_ACTION_NONE:
     break;
   }
+}
+
+bool handleMarauderButton(ButtonEvent event) {
+  if (event == BUTTON_NONE) return false;
+  if (event == BUTTON_HOLD_5S || event == BUTTON_BACK) {
+    MarauderCore::core().stopAll();
+    return true;
+  }
+  if (event == BUTTON_CLICK) {
+    MarauderCore::core().menuNext();
+    updateMarauderScreen(true);
+  } else if (event == BUTTON_PREV) {
+    MarauderCore::core().menuPrev();
+    updateMarauderScreen(true);
+  } else if (event == BUTTON_SELECT || event == BUTTON_HOLD_2S) {
+    MarauderCore::core().menuSelect();
+    updateMarauderScreen(true);
+  }
+  return false;
 }
 
 void openScreen(AppScreen screen) {
@@ -429,6 +466,18 @@ void goBackToMenu() {
   webMode.stop();
   openScreen(SCREEN_MENU);
   menu.draw(currentScreen, true);
+}
+
+void updateMarauderScreen(bool force) {
+  static uint32_t lastDrawMs = 0;
+  if (!force && millis() - lastDrawMs < 500) {
+    return;
+  }
+  lastDrawMs = millis();
+  String line1, line2, line3, line4;
+  MarauderCore::core().renderMenuLines(line1, line2, line3, line4);
+  String body = line2 + "\n" + line3 + "\n" + line4;
+  display.drawMessage(line1.c_str(), body, "Click next  Hold select");
 }
 
 void runDisplayTest() {

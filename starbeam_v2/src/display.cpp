@@ -45,6 +45,7 @@ const char* Display::menuLabels[NUM_MENU_ITEMS] = {
     "Set 434.30mhz",
     "Set 434.400mhz",
     "Set 433.90mhz",
+    "Marauder Core",
     "Settings",
     "Help"
 };

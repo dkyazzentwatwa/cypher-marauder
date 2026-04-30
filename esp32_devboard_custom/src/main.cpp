@@ -130,6 +130,7 @@ bool ledEnabled      = false;
 uint8_t rainbowHue   = 0;
 bool screenDirty     = true;
 String serialLine;
+unsigned long lastMarauderRefresh = 0;
 
 // ============================================================================
 // BUTTON STATE — edge detection
@@ -208,6 +209,10 @@ void loop() {
   updateLED();
   processSerialCommands();
   MarauderCore::core().poll();
+  if (currentScreen == SCREEN_MARAUDER_CORE && millis() - lastMarauderRefresh > 500) {
+    lastMarauderRefresh = millis();
+    screenDirty = true;
+  }
 
   if (screenDirty && displayFound) {
     renderScreen();
@@ -338,19 +343,15 @@ void handleButtonPresses() {
   }
   else if (currentScreen == SCREEN_MARAUDER_CORE) {
     if (left) {
-      MarauderCore::core().setChannel(MarauderCore::core().channel() <= 1 ? 13 : MarauderCore::core().channel() - 1);
+      MarauderCore::core().menuPrev();
       screenDirty = true;
     }
     if (right) {
-      MarauderCore::core().setChannel(MarauderCore::core().channel() >= 13 ? 1 : MarauderCore::core().channel() + 1);
+      MarauderCore::core().menuNext();
       screenDirty = true;
     }
     if (center) {
-      if (MarauderCore::core().monitoring()) {
-        MarauderCore::core().stopMonitor();
-      } else {
-        MarauderCore::core().startMonitor(MarauderCore::MONITOR_ALL);
-      }
+      MarauderCore::core().menuSelect();
       screenDirty = true;
     }
     if (wasHeld(0) || wasHeld(2)) {
@@ -495,13 +496,13 @@ void renderBoardInfo() {
 
 void renderMarauderCore() {
   String line1, line2, line3, line4;
-  MarauderCore::core().renderLines(line1, line2, line3, line4);
+  MarauderCore::core().renderMenuLines(line1, line2, line3, line4);
   display.setCursor(0, 0);
   display.println(line1);
   display.println(line2);
   display.println(line3);
   display.println(line4);
-  display.println("C:start/stop L/R:ch");
+  display.println("C:select L/R:nav");
   display.println("Hold L/R:back");
 }
 

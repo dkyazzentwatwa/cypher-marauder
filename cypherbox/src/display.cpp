@@ -51,6 +51,7 @@ const char* Display::menuLabels[NUM_MENU_ITEMS] = {
     "Get RSSI",
     "Flush Buffer",
     "Stop All",
+    "Marauder Core",
     "Settings",
     "Help",
     // Captive Portal

@@ -64,6 +64,7 @@ static const CommandMapping commands[] = {
     {"get_rssi", GET_RSSI, "Get RSSI Value"},
     {"flush_buff", FLUSH_BUFF, "Clear Buffer"},
     {"stop_all", STOP_ALL, "Stop All Operations"},
+    {"marauder_core", MARAUDER_CORE, "Open shared Marauder menu"},
     {"settings", SETTINGS, "Settings"},
     {"help", HELP, "Show Help"}
 };
