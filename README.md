@@ -1,45 +1,92 @@
+<p align="center">
+  <img src="img/cypher-maurauder-banner.png" alt="CYPHER MAURAUDER - Marauder meets littlehakr projects">
+</p>
+
 # Cypher Marauder
 
-Cypher Marauder is a beginner-focused Arduino fork with only five supported board sketches. Open the folder for your board, open the matching `.ino`, and upload.
+**Cypher Marauder is a multi-board ESP32 firmware lab that blends Marauder-style wireless diagnostics with littlehakr hardware projects.** It is built around practical Arduino sketches, board-specific hardware profiles, serial control, OLED/touch interfaces, and reusable modules for WiFi, BLE, RF, RFID, SD logging, HID payload demos, and field diagnostics.
 
-This repo now has two layers:
+This repo started from ESP32 Marauder inspiration, but it is now shaped as a Cypher/littlehakr project: smaller supported targets, cleaner Arduino-first folders, board-specific firmware, and a shared core that can be carried into new ESP32 builds.
 
-- The five board folders are the only supported upload targets.
-- `shared/marauder_core/` is the portable Marauder feature layer fused into those targets.
-- `shared/marauder_reference/` keeps the original Marauder source for future feature porting only; it is not a supported board target.
+> Use this project only on devices, networks, and cards you own or are explicitly authorized to test.
 
-## Supported Boards
+## What It Can Do
 
-| Board | Open this sketch | Hardware profile | Compile command |
+| Area | Features |
+| --- | --- |
+| WiFi visibility | AP discovery, channel/RSSI/security details, channel heatmaps, passive packet counters, beacon/probe/deauth/EAPOL counting, channel lock, and channel hopping. |
+| BLE and Bluetooth | BLE scanning, device listing, Bluetooth serial bridge utilities, and safe Bluetooth HID test flows on supported builds. |
+| RF lab work | Starbeam V2 support for NRF24 and CC1101 modules, RF scanning, analyzer views, and capture/replay-oriented module structure. |
+| Web and portal tools | Captive portal and web status/dashboard modes on supported boards, with board-local control surfaces. |
+| HID payload catalog | Waveshare ESP32-S3 payload folders for iOS demos, recon, productivity/fun demos, GoodUSB style demos, and lab-only security payload experiments. |
+| Storage and logs | SD browsing, packet/session logs, RFID dumps, wardriving CSV output, and file preview/delete tools on boards with storage. |
+| RFID/NFC lab | Cypherbox MFRC522 tools for card identification, readable block dumps, SD-backed dump files, and controlled restore workflows. |
+| Device UI | Serial CLI on every supported sketch, OLED menus on button boards, touch LCD support on Waveshare ESP32-S3, and board-specific status screens. |
+| Shared Marauder core | Portable serial commands for AP scans, packet monitoring, counters, channel control, and board integration. |
+
+## Supported Builds
+
+Open the folder for your board, open the matching `.ino`, and upload. These are the supported upload targets in this repo.
+
+| Build | Sketch | Hardware Profile | Best For |
 | --- | --- | --- | --- |
-| Project Starbeam V2 | `starbeam_v2/starbeam_v2.ino` | ESP32 with Starbeam OLED/buttons, NRF24, and CC1101 modules | `arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=huge_app starbeam_v2` |
-| ESP32 DevKitC | `esp32_devkitc/esp32_devkitc.ino` | Stock ESP32-DevKitC, serial only, no external modules | `arduino-cli compile --fqbn esp32:esp32:esp32 esp32_devkitc` |
-| Waveshare ESP32-S3 1.47 | `waveshare_esp32s3_147/waveshare_esp32s3_147.ino` | Waveshare ESP32-S3 1.47 touch LCD | `arduino-cli compile --fqbn esp32:esp32:esp32s3:USBMode=hwcdc,PartitionScheme=huge_app waveshare_esp32s3_147` |
-| Cypherbox | `cypherbox/cypherbox.ino` | Cypherbox OLED/buttons/SD/RFID/GPS build | `arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=huge_app cypherbox` |
-| ESP32 devboard custom PCB | `esp32_devboard_custom/esp32_devboard_custom.ino` | Custom ESP32 devboard with SSD1306, 3 buttons, WS2812 | `arduino-cli compile --fqbn esp32:esp32:esp32 esp32_devboard_custom` |
+| **Project Starbeam V2** | `starbeam_v2/starbeam_v2.ino` | ESP32 with Starbeam OLED/buttons, NRF24, and CC1101 modules | RF lab experiments, WiFi/BLE scans, serial CLI, OLED field controls. |
+| **ESP32 DevKitC** | `esp32_devkitc/esp32_devkitc.ino` | Stock ESP32-DevKitC, serial only | Simple Marauder core testing without external hardware. |
+| **Waveshare ESP32-S3 1.47** | `waveshare_esp32s3_147/waveshare_esp32s3_147.ino` | Waveshare ESP32-S3 1.47 touch LCD | Touch UI, HID payload catalog, WiFi/BLE tools, SD-oriented workflow. |
+| **Cypherbox** | `cypherbox/cypherbox.ino` | OLED/buttons/SD/RFID/GPS/NeoPixel build | Portable field utility with RFID, SD logs, WiFi, BLE, GPS, and serial control. |
+| **ESP32 Devboard Custom PCB** | `esp32_devboard_custom/esp32_devboard_custom.ino` | Custom ESP32 devboard with SSD1306, 3 buttons, WS2812 | Compact OLED/button Marauder core build. |
 
-## Arduino IDE Upload
+## Repo Layout
 
-1. Install the ESP32 board package in Arduino IDE.
-2. Install the libraries listed below for your board.
-3. Open the `.ino` file for your board.
-4. Select the matching ESP32 board in **Tools > Board**.
-5. Select the USB serial port in **Tools > Port**.
-6. Click **Upload**.
+```text
+cypher-marauder/
+├── starbeam_v2/              # RF-heavy Starbeam firmware
+├── esp32_devkitc/            # serial-only ESP32 DevKitC baseline
+├── waveshare_esp32s3_147/    # Waveshare touch LCD build and HID payload catalog
+├── cypherbox/                # OLED/buttons/SD/RFID/GPS Cypherbox firmware
+├── esp32_devboard_custom/    # custom OLED/button ESP32 board
+└── shared/
+    ├── marauder_core/        # portable Marauder-style feature layer
+    └── marauder_reference/   # upstream source reference only
+```
 
-## Arduino CLI Upload
+`shared/marauder_reference/` is kept for future feature porting. Do not upload it directly.
 
-Replace `/dev/cu.usbserial-0001` with your current port from `arduino-cli board list`.
+## Arduino CLI Quick Start
+
+Install the ESP32 Arduino core first:
 
 ```bash
+arduino-cli core update-index
+arduino-cli core install esp32:esp32
+```
+
+Find your board port:
+
+```bash
+arduino-cli board list
+```
+
+Compile and upload the build you want:
+
+```bash
+# Project Starbeam V2
 arduino-cli compile --upload --fqbn esp32:esp32:esp32:PartitionScheme=huge_app --port /dev/cu.usbserial-0001 starbeam_v2
+
+# ESP32 DevKitC
 arduino-cli compile --upload --fqbn esp32:esp32:esp32 --port /dev/cu.usbserial-0001 esp32_devkitc
+
+# Waveshare ESP32-S3 1.47
 arduino-cli compile --upload --fqbn esp32:esp32:esp32s3:USBMode=hwcdc,PartitionScheme=huge_app --port /dev/cu.usbmodem1101 waveshare_esp32s3_147
+
+# Cypherbox
 arduino-cli compile --upload --fqbn esp32:esp32:esp32:PartitionScheme=huge_app --port /dev/cu.usbserial-0001 cypherbox
+
+# ESP32 Devboard Custom PCB
 arduino-cli compile --upload --fqbn esp32:esp32:esp32 --port /dev/cu.usbserial-0001 esp32_devboard_custom
 ```
 
-For the Waveshare ESP32-S3 board, do the 1200-baud touch first if the board does not enter upload mode cleanly:
+For the Waveshare ESP32-S3, use a 1200-baud touch if the board does not enter upload mode cleanly:
 
 ```bash
 stty -f /dev/cu.usbmodem1101 1200
@@ -49,29 +96,39 @@ arduino-cli board list
 
 Then rerun the upload command with the new port shown by `arduino-cli board list`.
 
-## Libraries
+## Arduino IDE Upload
 
-Install these with Arduino Library Manager or `arduino-cli lib install`.
+1. Install the ESP32 board package in Arduino IDE.
+2. Install the libraries for your board from the table below.
+3. Open the `.ino` file inside the folder for your board.
+4. Select the matching ESP32 board in **Tools > Board**.
+5. Select the required partition scheme when listed below.
+6. Select the USB serial port in **Tools > Port**.
+7. Click **Upload**.
 
-| Board | Libraries |
+## Required Libraries
+
+Install with Arduino Library Manager or `arduino-cli lib install`.
+
+| Build | Libraries |
 | --- | --- |
-| Starbeam V2 | `Adafruit GFX Library`, `Adafruit SSD1306`, `U8g2_for_Adafruit_GFX`, `RF24`, `SmartRC-CC1101-Driver-Lib`; the second CC1101 driver files are bundled in `starbeam_v2/src/` |
-| ESP32 DevKitC | None beyond the ESP32 board package |
-| Waveshare ESP32-S3 1.47 | `Adafruit GFX Library`, `Adafruit ST7735 and ST7789 Library`, `Adafruit SSD1306`, `NimBLE-Arduino` |
-| Cypherbox | `Adafruit GFX Library`, `Adafruit SSD1306`, `U8g2_for_Adafruit_GFX`, `TinyGPSPlus`, `RTClib`, `MFRC522`, `Adafruit NeoPixel` |
-| ESP32 devboard custom PCB | `Adafruit GFX Library`, `Adafruit SSD1306`, `FastLED` |
+| Starbeam V2 | `Adafruit GFX Library`, `Adafruit SSD1306`, `U8g2_for_Adafruit_GFX`, `RF24`, `SmartRC-CC1101-Driver-Lib`; the second CC1101 driver files are bundled in `starbeam_v2/src/`. |
+| ESP32 DevKitC | None beyond the ESP32 board package. |
+| Waveshare ESP32-S3 1.47 | `Adafruit GFX Library`, `Adafruit ST7735 and ST7789 Library`, `Adafruit SSD1306`, `NimBLE-Arduino`. |
+| Cypherbox | `Adafruit GFX Library`, `Adafruit SSD1306`, `U8g2_for_Adafruit_GFX`, `TinyGPSPlus`, `RTClib`, `MFRC522`, `Adafruit NeoPixel`. |
+| ESP32 Devboard Custom PCB | `Adafruit GFX Library`, `Adafruit SSD1306`, `FastLED`. |
 
 ## Serial Monitor
 
-All sketches use `115200` baud:
+All supported sketches use `115200` baud.
 
 ```bash
 arduino-cli monitor --port /dev/cu.usbserial-0001 --baudrate 115200
 ```
 
-## Fused Marauder Core
+## Shared Marauder Core Commands
 
-Every board exposes the shared Marauder core through serial commands. The custom ESP32 devboard also has an OLED **Marauder Core** menu item.
+The shared core exposes a common serial command set across the supported boards. The custom ESP32 devboard also exposes the core through an OLED **Marauder Core** menu item.
 
 ```text
 marauder help
@@ -90,19 +147,14 @@ marauder stop
 marauder reset
 ```
 
-Current shared-core features:
+## Project Rules
 
-| Feature | What it does |
-| --- | --- |
-| AP discovery | Scans nearby access points, including hidden SSIDs, and prints channel/RSSI/security/BSSID/SSID. |
-| Channel control | Sets a fixed monitor channel or hops channels 1-13. |
-| Packet monitor | Uses ESP32 promiscuous mode for passive packet counting. |
-| Marauder-style counters | Tracks management/data/control frames plus beacon, probe, deauth, disassoc, and EAPOL counts. |
-| Board integration | Serial commands on all five boards; OLED menu/status screen on the custom ESP32 devboard. |
+- The five build folders in the supported table are the active board sketches.
+- Each supported sketch is self-contained enough to compile from its folder.
+- The root README is the project overview; board folders can have deeper wiring and command notes.
+- Upstream Marauder source in `shared/marauder_reference/` is reference material only.
+- Keep new features board-aware: add shared logic to `shared/marauder_core/` when it is portable, and keep hardware-specific code inside the board folder.
 
-## Folder Rules
+## Status
 
-- Only the five folders in the support table are active board sketches.
-- Each board sketch is self-contained inside this repo.
-- Unsupported upstream Marauder variants, flash bundles, release binaries, PCB/mechanical archives, and old TFT setup headers were intentionally removed.
-- Original Marauder source kept under `shared/marauder_reference/` is reference-only and should not be uploaded directly.
+Cypher Marauder is actively evolving as a hardware lab repo. Expect fast iteration around board profiles, safer defaults, cleaner UI flows, payload organization, and reusable ESP32 modules for future littlehakr devices.
