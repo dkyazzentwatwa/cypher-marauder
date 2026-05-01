@@ -193,17 +193,6 @@ class Core {
       Serial.println("[marauder] counters reset");
       return true;
     }
-    if (lower == "m lab unlock") {
-      _labUnlocked = true;
-      Serial.println("[marauder] lab unlocked for this boot. Authorized lab use only.");
-      return true;
-    }
-    if (lower == "m lab lock") {
-      _labUnlocked = false;
-      stopActive();
-      Serial.println("[marauder] lab locked");
-      return true;
-    }
     if (lower == "m pcap start") {
       startPcap();
       return true;
@@ -264,8 +253,7 @@ class Core {
   void renderLines(String &line1, String &line2, String &line3, String &line4) const {
     line1 = _activeMode != ACTIVE_OFF ? String("Lab: ") + activeName(_activeMode) :
             (_monitoring ? "Marauder: MON" : "Marauder Core");
-    line2 = String("CH ") + _channel + (_hop ? " hop" : " fixed") +
-            (_labUnlocked ? " LAB" : "");
+    line2 = String("CH ") + _channel + (_hop ? " hop" : " fixed");
     line3 = String("AP ") + _apCount + "/" + selectedApCount() +
             " STA " + _staCount + "/" + selectedStationCount();
     line4 = String("Pkt ") + snapshotTotal() + " E " + _stats.eapol +
@@ -276,7 +264,7 @@ class Core {
     line1 = "Marauder Menu";
     line2 = String("> ") + menuItemName(_menuIndex);
     line3 = menuItemHint(_menuIndex);
-    line4 = _labUnlocked ? "LAB unlocked" : "LAB locked";
+    line4 = String("Pkt ") + snapshotTotal();
   }
 
   void menuNext() { _menuIndex = (_menuIndex + 1) % MENU_COUNT; }
@@ -287,18 +275,16 @@ class Core {
       case 0: scanAccessPoints(); break;
       case 1: printAccessPoints(); break;
       case 2: startMonitor(_monitoring ? MONITOR_OFF : MONITOR_ALL); break;
-      case 3: _labUnlocked = !_labUnlocked; Serial.printf("[marauder] lab %s\n", _labUnlocked ? "unlocked" : "locked"); break;
-      case 4: handleActiveCommand("m active beacon start"); break;
-      case 5: handleActiveCommand("m active deauth start"); break;
-      case 6: _pcapEnabled ? stopPcap() : startPcap(); break;
-      case 7: _portalActive ? stopPortal() : startPortal(); break;
-      case 8: handleBleCommand("m ble scan"); break;
+      case 3: handleActiveCommand("m active beacon start"); break;
+      case 4: handleActiveCommand("m active deauth start"); break;
+      case 5: _pcapEnabled ? stopPcap() : startPcap(); break;
+      case 6: _portalActive ? stopPortal() : startPortal(); break;
+      case 7: handleBleCommand("m ble scan"); break;
       default: printStatus(); break;
     }
   }
 
   bool monitoring() const { return _monitoring; }
-  bool labUnlocked() const { return _labUnlocked; }
   bool pcapEnabled() const { return _pcapEnabled; }
   bool portalActive() const { return _portalActive; }
   uint8_t channel() const { return _channel; }
@@ -408,7 +394,6 @@ class Core {
     Serial.println("  m scan sta | m list sta | m select sta <n> | m clear sta");
     Serial.println("  m monitor start|stop | m channel <1-13> | m hop on|off");
     Serial.println("  m pcap start|stop|status");
-    Serial.println("  m lab unlock|lock");
     Serial.println("  m active beacon|probe|deauth|pmkid start|stop");
     Serial.println("  m portal templates|template <n>|start|stop|captures");
     Serial.println("  m ble scan|list|stop");
@@ -416,10 +401,10 @@ class Core {
 
   void printStatus() const {
     Serial.println();
-    Serial.printf("[marauder] board=%s heap=%u channel=%u hop=%s monitor=%s mode=%s lab=%s active=%s\n",
+    Serial.printf("[marauder] board=%s heap=%u channel=%u hop=%s monitor=%s mode=%s active=%s\n",
                   _boardName, ESP.getFreeHeap(), _channel, _hop ? "on" : "off",
                   _monitoring ? "yes" : "no", modeName(_mode),
-                  _labUnlocked ? "unlocked" : "locked", activeName(_activeMode));
+                  activeName(_activeMode));
     Serial.printf("[marauder] caps display=%d touch=%d storage=%d portal=%d ble=%d active_wifi=%d board_radios=%d board_tools=%d\n",
                   _caps.display ? 1 : 0, _caps.touch ? 1 : 0, _caps.storage ? 1 : 0,
                   _caps.portal ? 1 : 0, _caps.ble ? 1 : 0, _caps.activeWifi ? 1 : 0,
@@ -437,7 +422,7 @@ class Core {
   static constexpr int PCAP_SNAP = 256;
   static constexpr int DNS_PORT = 53;
   static constexpr int PORTAL_COUNT = 5;
-  static constexpr int MENU_COUNT = 9;
+  static constexpr int MENU_COUNT = 8;
 
   struct PcapPacket {
     uint32_t sec = 0;
@@ -451,7 +436,6 @@ class Core {
   bool _begun = false;
   bool _monitoring = false;
   bool _hop = true;
-  bool _labUnlocked = false;
   bool _pcapEnabled = false;
   bool _storageMounted = false;
   bool _usingSdMmc = false;
@@ -674,10 +658,6 @@ class Core {
     }
     if (!_caps.activeWifi) {
       Serial.println("[marauder] active WiFi is not available on this board");
-      return;
-    }
-    if (!_labUnlocked) {
-      Serial.println("[marauder] locked. Run 'm lab unlock' for authorized lab use first.");
       return;
     }
     if (lower.indexOf(" beacon ") >= 0) startActive(ACTIVE_BEACON);
@@ -935,10 +915,6 @@ class Core {
       Serial.println("[marauder] portal is not available on this board");
       return;
     }
-    if (!_labUnlocked) {
-      Serial.println("[marauder] locked. Run 'm lab unlock' for authorized lab portal use first.");
-      return;
-    }
     stopMonitor();
     WiFi.mode(WIFI_AP);
     const String ssid = String("Cypher-Lab-") + portalTemplateName(_portalTemplate);
@@ -1091,7 +1067,7 @@ class Core {
 
   const char *menuItemName(int idx) const {
     static const char *names[MENU_COUNT] = {
-      "Scan APs", "List APs", "Monitor", "Lab Unlock", "Beacon Lab",
+      "Scan APs", "List APs", "Monitor", "Beacon Lab",
       "Deauth Lab", "PCAP", "Portal", "BLE"
     };
     return names[idx % MENU_COUNT];
@@ -1099,8 +1075,8 @@ class Core {
 
   const char *menuItemHint(int idx) const {
     static const char *hints[MENU_COUNT] = {
-      "Find targets", "Show targets", "Packets/stations", "Gate active tools",
-      "Lab TX beacons", "Selected APs", "SD capture", "Lab portal", "BLE scanner"
+      "Find targets", "Show targets", "Packets/stations", "Lab TX beacons",
+      "Selected APs", "SD capture", "Lab portal", "BLE scanner"
     };
     return hints[idx % MENU_COUNT];
   }

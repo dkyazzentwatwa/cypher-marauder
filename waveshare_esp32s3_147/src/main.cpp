@@ -400,13 +400,7 @@ bool handleMarauderButton(ButtonEvent event) {
   if (event == BUTTON_CLICK) {
     MarauderCore::core().menuNext();
     updateMarauderScreen(true);
-  } else if (event == BUTTON_PREV) {
-    MarauderCore::core().menuPrev();
-    updateMarauderScreen(true);
   } else if (event == BUTTON_HOLD_2S) {
-    MarauderCore::core().unlockLab();
-    updateMarauderScreen(true);
-  } else if (event == BUTTON_SELECT) {
     MarauderCore::core().menuSelect();
     updateMarauderScreen(true);
   }
